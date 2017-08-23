@@ -18,3 +18,9 @@ TODO
 
 ## Implementation
 This is a simple Java based Spring Boot app that presents a REST API using spring-boot-starter-web.  Each REST service in turn calls out to a shell to invoke the underlying O/S specific `docker stack` commands.  This currently runs locally on a Mac with Docker for Mac installed.  Eventually this will have a Dockerfile with the intention of running only on the UCP manager nodes.
+
+## Runtime
+To deploy this application in a container:
+```bash
+docker run -it -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker dockerstack
+```
