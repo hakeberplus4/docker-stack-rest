@@ -1,7 +1,7 @@
 # docker-stack-rest
 A REST API to proxy requests for docker stack commands.
 
-
+## Description
 Docker has created a huge amount of REST API capabilities including the ability to create 
 [secrets](https://docs.docker.com/engine/api/v1.30/#tag/Secret), 
 [networks](https://docs.docker.com/engine/api/v1.30/#tag/Network), 
@@ -15,3 +15,6 @@ a REST API that mimics the `docker stack` REST API (see the output from `docker 
 TODO
 * implement security
 * create container definition suitable for deploy to UCP manager nodes.
+
+## Implementation
+This is a simple Java based Spring Boot app that presents a REST API using spring-boot-starter-web.  Each REST service in turn calls out to a shell to invoke the underlying O/S specific `docker stack` commands.  This currently runs locally on a Mac with Docker for Mac installed.  Eventually this will have a Dockerfile with the intention of running only on the UCP manager nodes.
