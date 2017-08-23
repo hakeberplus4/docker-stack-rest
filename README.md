@@ -11,3 +11,7 @@ networks, volumes, and services are what make up the fundamentals of a stack.
 
 What is missing from Docker's REST API is the ability to deploy an entire Docker stack. This project implements 
 a REST API that mimics the `docker stack` REST API (see the output from `docker stack --help`).
+
+TODO
+* implement security
+* create container definition suitable for deploy to UCP manager nodes.
