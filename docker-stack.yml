@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  dstack:
+  rest_api:
     image: docker.io/hakeberplus4/docker-stack-rest
     ports:
       - "9080:8080"
@@ -10,10 +10,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
     deploy:
-      mode: global
+      replicas: 2
       placement:
         constraints:
-          - node.role == manager
+        - node.role == manager
       resources:
         reservations:
           memory: 512M
