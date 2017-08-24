@@ -1,7 +1,6 @@
 package org.millersrock.docker.stack;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,8 +57,6 @@ class StackExecutor {
         return tempPath;
     }
 
-    @Data
-    @Accessors
     static class CommandOutput {
         CommandOutput(String options) {
             this.command = "docker stack " + options;
@@ -70,5 +67,80 @@ class StackExecutor {
         String output;
         Integer status;
         String error;
+
+        void setOutput(String output) {
+            this.output = new String(JsonStringEncoder.getInstance().quoteAsString(output));
+            //this.output = new String(JsonStringEncoder.getInstance().encodeAsUTF8(output));
+        }
+
+        public String getCommand() {
+            return this.command;
+        }
+
+        public String getOutput() {
+            return this.output;
+        }
+
+        public Integer getStatus() {
+            return this.status;
+        }
+
+        public String getError() {
+            return this.error;
+        }
+
+        public void setCommand(String command) {
+            this.command = command;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public void setError(String error) {
+            this.error = error;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof CommandOutput)) return false;
+            final CommandOutput other = (CommandOutput) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$command = this.getCommand();
+            final Object other$command = other.getCommand();
+            if (this$command == null ? other$command != null : !this$command.equals(other$command)) return false;
+            final Object this$output = this.getOutput();
+            final Object other$output = other.getOutput();
+            if (this$output == null ? other$output != null : !this$output.equals(other$output)) return false;
+            final Object this$status = this.getStatus();
+            final Object other$status = other.getStatus();
+            if (this$status == null ? other$status != null : !this$status.equals(other$status)) return false;
+            final Object this$error = this.getError();
+            final Object other$error = other.getError();
+            if (this$error == null ? other$error != null : !this$error.equals(other$error)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $command = this.getCommand();
+            result = result * PRIME + ($command == null ? 43 : $command.hashCode());
+            final Object $output = this.getOutput();
+            result = result * PRIME + ($output == null ? 43 : $output.hashCode());
+            final Object $status = this.getStatus();
+            result = result * PRIME + ($status == null ? 43 : $status.hashCode());
+            final Object $error = this.getError();
+            result = result * PRIME + ($error == null ? 43 : $error.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof CommandOutput;
+        }
+
+        public String toString() {
+            return "org.millersrock.docker.stack.StackExecutor.CommandOutput(command=" + this.getCommand() + ", output=" + this.getOutput() + ", status=" + this.getStatus() + ", error=" + this.getError() + ")";
+        }
     }
 }
