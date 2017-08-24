@@ -52,7 +52,7 @@ class StackExecutor {
     private static Path writeTempFile(String fileContents) throws IOException {
 
         List<String> lines = Collections.singletonList(fileContents);
-        Path tempPath = Files.createTempFile("docker-stack-file", "yml");
+        Path tempPath = Files.createTempFile("docker-stack-file-", ".yml");
         Files.write(tempPath, lines, Charset.defaultCharset(), StandardOpenOption.WRITE);
 
         return tempPath;
