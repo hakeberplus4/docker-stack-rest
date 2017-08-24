@@ -23,12 +23,13 @@ class StackExecutor {
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             String line;
             while ((line = input.readLine()) != null) {
-                output.append(line);
+                output.append(line).append("\n");
             }
             seo.setStatus(pr.waitFor());
         } catch (IOException | InterruptedException e) {
             seo.setError(e.toString());
         } finally {
+            System.out.println(output.toString());
             seo.setOutput(output.toString());
         }
         return seo;
@@ -69,8 +70,7 @@ class StackExecutor {
         String error;
 
         void setOutput(String output) {
-            this.output = new String(JsonStringEncoder.getInstance().quoteAsString(output));
-            //this.output = new String(JsonStringEncoder.getInstance().encodeAsUTF8(output));
+            this. output = "\n" + output;
         }
 
         public String getCommand() {
