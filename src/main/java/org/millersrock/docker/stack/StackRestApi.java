@@ -24,6 +24,7 @@ public class StackRestApi {
      * @param format Pretty-print tasks using a Go template
      */
     @RequestMapping(value = "ls")
+    @ResponseBody
     public StackExecutor.CommandOutput ls(@RequestParam(name = "format", required = false) String format) {
         StringBuilder sb = new StringBuilder("ls");
         if (format != null) {
@@ -104,7 +105,7 @@ public class StackRestApi {
      * @param stackName Name of stack to deploy
      */
     @RequestMapping(value = "deploy", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public StackExecutor.CommandOutput deploy(
+    public @ResponseBody StackExecutor.CommandOutput deploy(
             @RequestParam(name = "stackName") String stackName, @RequestBody DeployOptions options) {
 
         StringBuilder sb = new StringBuilder("deploy ").append(stackName);
@@ -127,7 +128,7 @@ public class StackRestApi {
      * @param stackName Name of stack you want to list tasks for
      */
     @RequestMapping(value = "rm", method = RequestMethod.POST)
-    public StackExecutor.CommandOutput rm(
+    public @ResponseBody StackExecutor.CommandOutput rm(
             @RequestParam(name = "stackName") String stackName,
             @RequestParam(name = "otherStackNames", required = false) String otherStackNames) {
 
