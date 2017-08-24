@@ -14,7 +14,9 @@ a REST API that mimics the `docker stack` REST API (see the output from `docker 
 
 TODO
 * implement security
-* create container definition suitable for deploy to UCP manager nodes.
+* ~~create container definition suitable for deploy to UCP manager nodes.~~
+* create stack definition suitable for deploying to UCP manager nodes.
+* add swagger API docs
 
 ## Implementation
 This is a simple Java based Spring Boot app that presents a REST API using spring-boot-starter-web.  Each REST service in turn calls out to a shell to invoke the underlying O/S specific `docker stack` commands.  This currently runs locally on a Mac with Docker for Mac installed.  Eventually this will have a Dockerfile with the intention of running only on the UCP manager nodes.
