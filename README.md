@@ -32,10 +32,14 @@ docker build --tag dockerstack .
 ```
 
 ## Runtime
-To deploy this application in a container:
+To deploy this application in a local container:
 ```bash
 docker run -it -p 8080:8080 \
        -v /var/run/docker.sock:/var/run/docker.sock \
        -v /usr/bin/docker:/usr/bin/docker \
        dockerstack
+```
+or to deploy to a docker swarm (be sure to eval the env.sh from the downloaded ucp bundle)
+```bash
+docker stack deploy -c docker-stack.yml my_docker_stack
 ```
