@@ -4,7 +4,6 @@ services:
 
   dstack:
     image: docker.io/hakeberplus4/docker-stack-rest
-    restart: always
     ports:
       - "9080:8080"
     volumes:
@@ -13,11 +12,10 @@ services:
     deploy:
       mode: global
       placement:
-        constraint:
-        - node.role == manager
+        constraints:
+          - node.role == manager
       resources:
         reservations:
           memory: 512M
         limits:
           memory: 1G
-
