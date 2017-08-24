@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  dstack:
+    image: docker.io/hakeberplus4/docker-stack-rest
+    restart: always
+    ports:
+      - "9080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    deploy:
+      mode: global
+      placement:
+        constraint:
+        - node.role == manager
+      resources:
+        reservations:
+          memory: 512M
+        limits:
+          memory: 1G
+
