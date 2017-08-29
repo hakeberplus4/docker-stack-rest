@@ -1,10 +1,9 @@
-version: '3'
+version: '3.1'
 
 services:
 
   dstack:
     image: docker.io/hakeberplus4/docker-stack-rest
-    restart: always
     ports:
       - "9080:8080"
     volumes:
@@ -13,7 +12,7 @@ services:
     deploy:
       mode: global
       placement:
-        constraint:
+        constraints:
         - node.role == manager
       resources:
         reservations:

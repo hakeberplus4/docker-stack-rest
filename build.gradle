@@ -25,8 +25,12 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-jersey')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	runtime('org.springframework.boot:spring-boot-devtools')
-	compileOnly('org.projectlombok:lombok')
+    compile('com.spotify:docker-client:8.9.0')
+    compile('ch.qos.logback:logback-classic')
+
+    runtime('org.springframework.boot:spring-boot-devtools')
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+
 }
