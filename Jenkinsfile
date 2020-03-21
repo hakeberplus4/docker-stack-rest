@@ -62,7 +62,7 @@ spec:
       }
     }
     stage('proto') {
-      step {
+      steps {
         script {
           docker.withRegistry( "https://$REGISTRY", registryCredential ) {
               imageExists = sh(returnStdout: true,
