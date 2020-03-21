@@ -41,7 +41,7 @@ spec:
    }
 
   stages {
-    stage('Info') {
+    stage('docke info') {
       steps {
         container('docker') {
           sh """
@@ -55,7 +55,7 @@ spec:
         }
       }
     }
-    stage('Run kubectl') {
+    stage('kubectl version') {
       steps {
         container('kubectl') {
           sh """
@@ -64,7 +64,7 @@ spec:
         }
       }
     }
-    stage('Run helm') {
+    stage('helm list') {
       steps {
         container('helm') {
           sh "helm list"
