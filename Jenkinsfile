@@ -62,24 +62,26 @@ spec:
       }
     }
     stage('proto') {
-      script {
-        docker.withRegistry( "https://$REGISTRY", registryCredential ) {
-            imageExists = sh(returnStdout: true,
-                script: """
-                    docker image ls -a --no-trunc |
-                    grep -i ${TAG} |
-                    grep -i ${IMAGE} |
-                    wc -l
-                    """).trim()
-            imageExists = (imageExists.toInteger() > 0)
-        }
-        if (imageExists) {
-            echo "Image already exists, skipping build..."
-        }
-        else {
-            docker.withRegistry( "https://$REGISTRY", registryCredential ) {
-                dockerImage = docker.build( "$REGISTRY/$IMAGE:$TAG", " --build-arg GIT_COMMIT=" + GIT_COMMIT + " --build-arg BUILD_NUMBER=" + BUILD_NUMBER + " .")
-            }
+      step {
+        script {
+          docker.withRegistry( "https://$REGISTRY", registryCredential ) {
+              imageExists = sh(returnStdout: true,
+                  script: """
+                      docker image ls -a --no-trunc |
+                      grep -i ${TAG} |
+                      grep -i ${IMAGE} |
+                      wc -l
+                      """).trim()
+              imageExists = (imageExists.toInteger() > 0)
+          }
+          if (imageExists) {
+              echo "Image already exists, skipping build..."
+          }
+          else {
+              docker.withRegistry( "https://$REGISTRY", registryCredential ) {
+                  dockerImage = docker.build( "$REGISTRY/$IMAGE:$TAG", " --build-arg GIT_COMMIT=" + GIT_COMMIT + " --build-arg BUILD_NUMBER=" + BUILD_NUMBER + " .")
+              }
+          }
         }
       }
     }
