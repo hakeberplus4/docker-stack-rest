@@ -45,7 +45,9 @@ spec:
     }
     stage('Run kubectl') {
       container('kubectl') {
-        sh "kubectl get pods"
+        sh """
+           kubectl get pods
+        """
       }
     }
     stage('Run helm') {
