@@ -36,6 +36,11 @@ spec:
              docker info
           """
         }
+        container('docker') {
+          sh """
+             docker version
+          """
+        }
       }
     }
   }
