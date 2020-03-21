@@ -55,6 +55,13 @@ spec:
         }
       }
     }
+    stage('Run helm') {
+      steps {
+        container('helm') {
+          sh "helm list"
+        }
+      }
+    }
     stage('Run kubectl') {
       steps {
         container('kubectl') {
@@ -66,13 +73,6 @@ spec:
           sh """
              kubectl get pods
           """
-        }
-      }
-    }
-    stage('Run helm') {
-      steps {
-        container('helm') {
-          sh "helm list"
         }
       }
     }
