@@ -1,4 +1,10 @@
 pipeline {
+  environment{
+      DOCKER_HOST_NAME = "tcp://atheneucp-non-prod.onintranet.com:443"
+      registryCredential = 'docker-credentials'
+      CURRENT_BRANCH="${GIT_BRANCH.replaceFirst(/^origin\//, '')}"
+      SLEEP_PRE_EXEC="10"
+  }
   agent {
     kubernetes {
       label 'k8s-agent-demo'
@@ -41,7 +47,7 @@ spec:
    }
 
   stages {
-    stage('docke info') {
+    stage('docker info') {
       steps {
         container('docker') {
           sh """
@@ -52,6 +58,28 @@ spec:
           sh """
              docker version
           """
+        }
+      }
+    }
+    stage('proto') {
+      script {
+        docker.withRegistry( "https://$REGISTRY", registryCredential ) {
+            imageExists = sh(returnStdout: true,
+                script: """
+                    docker image ls -a --no-trunc |
+                    grep -i ${TAG} |
+                    grep -i ${IMAGE} |
+                    wc -l
+                    """).trim()
+            imageExists = (imageExists.toInteger() > 0)
+        }
+        if (imageExists) {
+            echo "Image already exists, skipping build..."
+        }
+        else {
+            docker.withRegistry( "https://$REGISTRY", registryCredential ) {
+                dockerImage = docker.build( "$REGISTRY/$IMAGE:$TAG", " --build-arg GIT_COMMIT=" + GIT_COMMIT + " --build-arg BUILD_NUMBER=" + BUILD_NUMBER + " .")
+            }
         }
       }
     }
@@ -84,6 +112,23 @@ spec:
           """
         }
       }
+    }
+  }
+  post{
+    always{
+        script{
+            echo "Complete"
+        }
+    }
+    success{
+        script{
+            echo "Success"
+        }
+    }
+    failure{
+        script{
+            echo "Failure"
+        }
     }
   }
 }
