@@ -1,4 +1,11 @@
 pipeline {
+  agent {
+    kubernetes {
+      label 'k8s-agent-demo'
+      defaultContainer 'k8s-agent'
+     }
+   }
+
   stages {
     stage('Info') {
       steps {
