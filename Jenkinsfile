@@ -55,6 +55,15 @@ spec:
         }
       }
     }
+    stage('Run kubectl') {
+      steps {
+        container('kubectl') {
+          sh """
+             kubectl version
+          """
+        }
+      }
+    }
     stage('Run helm') {
       steps {
         container('helm') {
