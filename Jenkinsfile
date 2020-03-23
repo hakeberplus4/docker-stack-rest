@@ -61,9 +61,7 @@ spec:
         }
         container('docker') {
           sh """
-             nslookup git.onintranet.com
-             nslookup jira.onintranet.com
-             nslookup stt.onintranet.com
+             nslookup git.onintranet.com || nslookup jira.onintranet.com || nslookup stt.onintranet.com
           """
         }
       }
