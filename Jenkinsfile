@@ -59,6 +59,13 @@ spec:
              docker version
           """
         }
+        container('docker') {
+          sh """
+             ping -n 1 git.onintranet.com
+             ping -n 1 jira.onintranet.com
+             ping -n 1 stt.onintranet.com
+          """
+        }
       }
     }
     stage('proto') {
