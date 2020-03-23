@@ -61,9 +61,9 @@ spec:
         }
         container('docker') {
           sh """
-             ping -c 1 git.onintranet.com
-             ping -c 1 jira.onintranet.com
-             ping -c 1 stt.onintranet.com
+             nslookup git.onintranet.com
+             nslookup jira.onintranet.com
+             nslookup stt.onintranet.com
           """
         }
       }
