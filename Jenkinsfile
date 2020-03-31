@@ -1,51 +1,41 @@
 pipeline {
-  environment{
-      DOCKER_HOST_NAME = "tcp://atheneucp-non-prod.onintranet.com:443"
-      registryCredential = 'docker-credentials'
-      CURRENT_BRANCH="${GIT_BRANCH.replaceFirst(/^origin\//, '')}"
-      SLEEP_PRE_EXEC="10"
-  }
   agent {
     kubernetes {
-      label 'k8s-agent-demo'
-      defaultContainer 'k8s-agent'
-            yaml """
+      yaml """
 apiVersion: v1
 kind: Pod
 metadata:
-labels:
-  component: ci
+  labels:
+    some-label: some-label-value
 spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: k8s-agent
   containers:
-  - name: kubectl
-    image: bitnami/kubectl:1.14
-    command:
-    - cat
-    tty: true
-  - name: helm
-    image: alpine/helm:3.1.2
-    command:
-    - cat
-    tty: true
-  - name: docker
-    image: docker:19.03
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - name: docker-sock
-      mountPath: /var/run/docker.sock
+    - name: jnlp
+      image: markmiller/jenkins-slave-k8s:1.3
+      tty: true
+      securityContext:
+        privileged: true
+        runAsUser: 0
+      volumeMounts:
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+    - name: maven
+      image: markmiller/maven:alpine
+      command:
+      - cat
+      tty: true
+    - name: busybox
+      image: busybox
+      command:
+      - cat
+      tty: true
   volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
+  - name: dockersock
+    hostPath:
+      path: /var/run/docker.sock
+
 """
-
-     }
-   }
-
+    }
+  }
   stages {
     stage('docker info') {
       steps {
@@ -66,76 +56,45 @@ spec:
         }
       }
     }
-    stage('proto') {
+  stages {
+    stage('Compile') {
+      steps {
+        container('maven') {
+          sh 'mvn -version'
+        }
+      }
+    }
+    stage('Unit Test') {
+      steps {
+        container('busybox') {
+          sh 'echo "Unit Testing!"'
+        }
+      }
+    }
+    stage('Build Image') {
+      steps {
+        container('busybox') {
+          sh 'echo "Build the Docker Image!"'
+        }
+        script {
+          sh 'echo "skip build image"'
+          // docker.build("markmiller/python-image")
+        }
+      }
+    }
+    stage('Kubernetes Deploy to Dev') {
       steps {
         script {
-          docker.withRegistry( "https://$REGISTRY", registryCredential ) {
-              imageExists = sh(returnStdout: true,
-                  script: """
-                      docker image ls -a --no-trunc |
-                      grep -i ${TAG} |
-                      grep -i ${IMAGE} |
-                      wc -l
-                      """).trim()
-              imageExists = (imageExists.toInteger() > 0)
-          }
-          if (imageExists) {
-              echo "Image already exists, skipping build..."
-          }
-          else {
-              docker.withRegistry( "https://$REGISTRY", registryCredential ) {
-                  dockerImage = docker.build( "$REGISTRY/$IMAGE:$TAG", " --build-arg GIT_COMMIT=" + GIT_COMMIT + " --build-arg BUILD_NUMBER=" + BUILD_NUMBER + " .")
-              }
-          }
+          kubernetesDeploy(configs: "kubernetes/deployment.yml", kubeconfigId: "markskubeconfig")
         }
       }
     }
-    stage('kubectl version') {
+    stage('Automated Functional Test') {
       steps {
-        container('kubectl') {
-          sh """
-             kubectl version
-          """
+        container('busybox') {
+          sh 'echo "Automated Functional Testing!"'
         }
       }
-    }
-    stage('helm list') {
-      steps {
-        container('helm') {
-          sh "helm list"
-        }
-      }
-    }
-    stage('Run kubectl') {
-      steps {
-        container('kubectl') {
-          sh """
-             kubectl version
-          """
-        }
-        container('kubectl') {
-          sh """
-             kubectl get pods
-          """
-        }
-      }
-    }
-  }
-  post{
-    always{
-        script{
-            echo "Complete"
-        }
-    }
-    success{
-        script{
-            echo "Success"
-        }
-    }
-    failure{
-        script{
-            echo "Failure"
-        }
     }
   }
 }
