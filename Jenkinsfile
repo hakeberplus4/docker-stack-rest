@@ -85,7 +85,7 @@ spec:
     stage('Kubernetes Deploy to Dev') {
       steps {
         script {
-          kubernetesDeploy(configs: "kubernetes/deployment.yml", kubeconfigId: "markskubeconfig")
+          kubernetesDeploy(configs: "deployment.yml", kubeconfigId: "markskubeconfig")
         }
       }
     }
